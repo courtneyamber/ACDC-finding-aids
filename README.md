@@ -1,2 +1,4 @@
 # ACDC Finding Aid Project
-My repository for the ACDC finding aids project
+## Completed for IS 452: Foundations of Information Processing
+------------------------------
+This is a test 
