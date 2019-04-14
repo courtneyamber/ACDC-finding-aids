@@ -12,3 +12,9 @@
 
 
 ### How to run the code...
+
+
+
+
+### Sources that helped me understand dataframes
+https://stackoverflow.com/questions/16476924/how-to-iterate-over-rows-in-a-dataframe-in-pandas 
