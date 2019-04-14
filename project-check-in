@@ -1,0 +1,11 @@
+# Narrative (thus far) 
+
+The goal of this project is to create a series of finding aids for collections in the the Agricultural Communications Documentation Center (ACDC) in the Funk ACES Library.  Each of these finding aids will contain several elements including a title, creator, extent, access statement, biographical note, arrangement note, and collection inventory.
+
+To begin, I downloaded a .mrc file for all records from the ACDC's database, BibLeaves.  Documents that belong to a particular collection should include a note in the record indicating such, e.g. "James F. Evans Collection".  I then converted this .mrc file to a csv using C# Marc Editor.  I am still trying to determine whether to convert these records to either a .csv or .xml in 
+
+
+
+# Detailed Sketch of Project (with questions)
+1. Download .mrc file of all records from BibLeaves
+2. 
