@@ -5,3 +5,4 @@ My goal in this project is to create finding aids of each of the ACDC's contribu
 
 -------------------
 
+STILL IN PROGRESS - TRANSFER FROM CHECK-IN AND WORK NOTEBOOK
