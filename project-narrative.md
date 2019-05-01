@@ -9,10 +9,10 @@ After downloading this file, I needed to convert it to a format I could easily r
 
 
 
-I've worked through a 'rough draft' of an inventory, but fields still need to be cleaned.
+-------------------
 
-(Still working on transferring notes from my work notebook to my narrative, most of the time I was getting lost down rabbit holes and forgetting to write down my progress and challenges).
+STILL IN PROGRESS 
 
 -------------------
 
-STILL IN PROGRESS - TRANSFER FROM CHECK-IN AND WORK NOTEBOOK
+### 395 words
