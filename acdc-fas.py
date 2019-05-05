@@ -1,105 +1,59 @@
+import numpy as np
+import pandas as pd
 
-##########################################
-#  IMPORT COLLECTIONS TO MAKE THIS WORK  #
-##########################################
-                                         #
-import numpy as np                       #
-import pandas as pd                      #
-                                         #
-##########################################
-
-########################################################################################################################
-#                                    CREATE A LIST OF COLLECTION NAMES                                                 #
-########################################################################################################################
-                                                                                                                       #
-collections = ['Volumne One Number One','AgComm Teaching','Theses','INTERPAK','Oscars in Agriculture','Eric Abbott',   #
-               'Robert Agunga','Kathy Alison','George Axinn','Ovid Bay','John H. Behrens','Harvey F. Beutner',         #
-               'George Biggar','Kristina M. Boone','John Brien','Claron Burnett','Francis C. Byrnes',                  #
-               'Warwick Easdown','James F. Evans','Eldon Fredericks','Claude W. Gifford','James E. Grunig',            #
-               'Harold D. Guither','Dixon Harper','John A. Harvey','Delmar Hatesohl','Paul C. Hixson',                 #
-               'Theodore Hutchcroft','Robert Jarnagin','K. Robert Kern','Eugene A. Kroupa','Richard Lee',              #
-               'Mason E. Miller','Geoffrey Moss','Fred Myers','Hadley Read','Bonnie Riechert','Stephen G-M Shenton',   #
-               'Burton Swanson','Harold Swanson','Hal R. Taylor','Phillip J. Tichenor','Mark A. Tucker',               #
-               'William B. Ward','Donald Watson','Larry R. Whiting','John L. Woods']                                   #
-                                                                                                                       #
-########################################################################################################################
+collections = ['Volumne One Number One','AgComm Teaching','Theses','INTERPAK','Oscars in Agriculture','Eric Abbott',
+               'Robert Agunga','Kathy Alison','George Axinn','Ovid Bay','John H. Behrens','Harvey F. Beutner',
+               'George Biggar','Kristina M. Boone','John Brien','Claron Burnett','Francis C. Byrnes',
+               'Warwick Easdown','James F. Evans','Eldon Fredericks','Claude W. Gifford','James E. Gruning',
+               'Harold D. Guither','Dixon Harper','John A. Harvey','Delmar Hatesohl','Paul C. Hixson',
+               'Theodore Hutchcroft','Robert Jarnagin','K. Robert Kern','Eugene A. Kroupa','Richard Lee',
+               'Mason E. Miller','Geoffrey Moss','Fred Myers','Hadley Read','Bonnie Riechert','Stephen G-M Shenton',
+               'Burton Swanson','Harold Swanson','Hal R. Taylor','Phillip J. Tichenor','Mark A. Tucker',
+               'William B. Ward','Donald Watson','Larry R. Whiting','John L. Woods']
 
 
-########################################################################################################################
-#                            DEFINE THE FUNCTION TO CREATE THE RAW INVENTORIES                                         #
-########################################################################################################################
-                                                                                                                       #
-def raw_inventory(collection,filename):                                                                                #
-                                                                                                                       #
-    #READ THE CSV INTO A DATAFRAME USING PANDAS                                                                        #
-    ###########################################                                                                        #
-    df = pd.read_csv('acdc-records.csv')                                                                               #
-                                                                                                                       #
-    #CHANGE EVERYTHING IN THE DATAFRAME INTO A STRING                                                                  #
-    #################################################                                                                  #
-    df = df.applymap(str)                                                                                              #
-                                                                                                                       #
-    #DETERMINE WHICH COLUMNS UNNEEDED AND ASSIGN THOSE TO A VARIABLE                                                   #
-    ################################################################                                                   #
-    excol = ['RecordID', 'DateAdded', 'DateChanged', 'Author', 'Title','CopyrightDate', 'Barcode', 'Classification',   #
-             'MainEntry', 'Custom1','Custom2', 'Custom3', 'Custom4', 'Custom5', 'ImportErrors','ValidationErrors',     #
-             'TagNumber', 'Ind1', 'Ind2']                                                                              #
-                                                                                                                       #
-    #LOOP OVER DATAFRAME TO DROP UNEEDED COLUMNS                                                                       #
-    ############################################                                                                       #
-    for column in df.columns:                                                                                          #
-        if column in excol:                                                                                            #
-            df.drop(column, axis=1, inplace = True) #change the dataframe directly with inplace                        #
-                                                                                                                       #
-    #MAKE THE DATEFRAME ONLY INCLUDE ROWS IN WHICH THE 500 COLUMN CONTAINS A CERTAIN COLLECTION NOTE                   #
-    ################################################################################################                   #
-    df = df[df['500'].str.contains(collection)]                                                                        #
+def process_collection(collection,filename,filename_struc):
+    df = pd.read_csv('acdc-records.csv')
+    df = df.applymap(str)
+    df = df[df['500'].str.contains(collection)]
 
+    #Add box and folder cleaning thing
 
-    df['sort'] = df['852'].str.extract('(\d+)', expand=False).astype(str)
-    df.sort_values('sort',inplace=True, ascending=False)
-    df = df.drop('sort', axis=1)
-                                                                                                                       #
-    #INITIALIZE THE CITATION LIST                                                                                      #
-    #############################                                                                                      #
-    citations = []                                                                                                     #
-                                                                                                                       #
-    #LOOP OVER EACH CELL IN THE DATAFRAME                                                                              #
-    #####################################                                                                              #
-    for index,row in df.iterrows():                                                                                    #
-                                                                                                                       #
-        #BOX NUMBER                                                                                                    #
-                                                                                                                       #
-        box = row["852"]                                                                                               #
-        box = box.replace(                                                                                             #
-            "$aAgricultural Communications Documentation Center, Funk Library, University of Illinois$j","")           #
-        box = box.replace(                                                                                             #
-            "$aAgricultural Communications Documentation Center, Funk Library, University of Illinois$c+. ","")        #
-        box = box.replace(                                                                                             #
-            "$aAgricultural Communications Documentation Center, Funk Library, University of Illinois$c+ ","")         #
-        box = box.replace(                                                                                             #
-            "OAK ST 338.9105 CE ","")                                                                                  #
-        box = box.replace(                                                                                             #
-            "$aAgricultural Communications Documentation Center, Funk Library, University of Illinois$c+","")          #
-        box = box.replace(                                                                                             #
-            "Oak Street 338.9105 CE. ","")                                                                             #
-                                                                                                                       #
-        #RECORD ID                                                                                                     #
-                                                                                                                       #
-        record_id = row["1"]                                                                                           #
-        record_id = record_id.replace('ACDC_','')                                                                      #
-        record_id = record_id.replace(                                                                                 #
-            '$aAgricultural Communications Documentation Center, Funk Library, University of Illinois$c+. ',"")        #
+    df['Box'] = df['852'].str.\
+                   extract(r'.*\$.*(?P<BoxFolder>Box:.*)').astype(str).BoxFolder.str.\
+                   replace('\$.*', '', regex=True).str.\
+                   replace('  ', ' ', regex=True).str.\
+                   replace('Folder.*', '', regex=True).str.rstrip(' ;,')
+    df['Folder'] = df['852'].str.\
+                      extract(r'.*\$.*(?P<BoxFolder>Box:.*)').astype(str).BoxFolder.str.\
+                      replace('\$.*', '', regex=True).str.\
+                      replace('  ', ' ', regex=True).str.\
+                      extract(r'.*(?P<Folder>Folder:.*)').astype(str).Folder.str.rstrip(' ;,')
+    df['PlusIndictor'] = df['852'].str.\
+                            extract(r'.*\$[a-z](?P<PlusIndictor>\+).*Box:.*').astype(str).PlusIndictor
+    df['Subfield'] = df['852'].str.\
+                            extract(r'.*\$(?P<Subfield>[a-z])\+*.*Box:.*').astype(str).Subfield
+    df['RemainingData'] = df['852'].str.replace('Box:.*', '', regex=True).astype(str).str.rstrip()
+    df.sort_values(['Box','Folder','RemainingData','Title'], ascending=[True,True,True,True],inplace=True)
+    df.reset_index(drop=True,inplace=True)
 
-        #AUTHOR
+## DataFrame now contains the fields Box, Folder, Subfield, PlusIndictor, RemainingData
+##     Subfield -- subfield letter that contained the box data
+##     PlusIndictor -- plus sign in found proceeding subfield letter
+##     RemainingData  -- remaining data found in box subfield
+##  only data from the box subfield is used to populate these extra field
 
-        author = row["100"]
-        author = author.replace("$a","")
-        author = author.replace("$eauthor$4aut","")
-        author = author.replace("nan,","")
-
-        #ADDITIONAL AUTHORS
-
+    citations = []
+    for index,row in df.iterrows():
+        box = row['Box']
+        folder = row['Folder']
+        record_id = row["1"]
+        record_id = record_id.replace('ACDC_','')
+        author = ""
+        for subfield in row['100']:
+            if subfield != "nan":
+                if subfield[0] =="a":
+                    author = subfield[1:]
         addauthor = ""
         if row["700"] != "nan":
             for subfield in row["700"].split("$"):
@@ -108,15 +62,8 @@ def raw_inventory(collection,filename):                                         
                         addauthor += subfield[1:] + ", "
             if addauthor != "":
                 addauthor = addauthor[0:len(addauthor)-2]
-
-        #TITLE
-
         title = row["245"]
-        title = title.replace("$a","")
-        title = title.replace("$u","")
-
-        #YEAR
-
+        title = title.replace('$a','')
         year = "undated"
         for subfield in row["260"].split("$"):
             if subfield != "":
@@ -124,73 +71,43 @@ def raw_inventory(collection,filename):                                         
                     if subfield[1:] != "":
                         year = subfield[1:]
 
-        #CREATING THE CITATION
-        ######################
-        if "Box" not in box:
-            citation = record_id + ". " + author + ", " + addauthor + ". " + title + ". " + "(" + year + ")."
-            citations.append(citation)
-        else:
-            citation = box + ". " + record_id + ". " + author + ", " + addauthor + ". " + title + ". " \
-                       + "(" + year + ")."
-            citations.append(citation)
+        citation = ""
 
-        #CITATION
-        # Box No.
-        #   Record ID No. Author(s). "Title". (Year)                                                                   #
-        # [852]                                                                                                        #
-        #   [1]. [100$a],[700$a].[245$a].[260$c]                                                                       #
-                                                                                                                       #
-                                                                                                                       #
-    #WRITING OUT THE FILE                                                                                              #
-    #####################                                                                                              #
-    outfile = open(filename,"w",encoding="utf-8")                                                                      #
-    for citation in citations:                                                                                         #
-        print(citation, file = outfile)                                                                                #
-    outfile.close                                                                                                      #
-                                                                                                                       #
-########################################################################################################################
+        if box != "nan":
+            citation += box + '. '
+        if folder != "nan":
+            citation += folder + '. '
+        citation += record_id
+        if author != "nan":
+            citation += author + ", "
+        if addauthor != "nan":
+            citation += addauthor
+        citation += title +". "
+        citation += "(" + year +")."
 
+        citations.append(citation)
+    outfile = open(filename,"w",encoding="utf-8")
+    outfile2 = open(filename_struc,'w',encoding='utf-8')
 
+    lastbox = ""
+    for citation in citations:
+        print(citation, file = outfile)
+        box = citation.split(".")[0]
+        if lastbox != box:
+            print(box, file = outfile2)
+        print(citation[citation.find(".")+1:], file = outfile2)
+        lastbox = box
 
-#####################################################################################################
-#                      APPLYING THE RAW INVENTORIES FUNCTION TO EACH COLLECTION                     #
-#####################################################################################################
-                                                                                                    #
-def inventories():                                                                                  #
-    inventorynames = []                                                                             #
-    for collection in collections:                                                                  #
-        filenames = raw_inventory(collection,"'"+ collection.replace(" ","-") + "-inventory.txt")   #
-        inventorynames.append(filenames)                                                            #
-    return filenames                                                                                #
-inventories()                                                                                       #
-                                                                                                    #
-#####################################################################################################
+    outfile.close()
+    outfile2.close()
 
 
-#DEFINE A FUNCTION TO CLEAN THE RAW INVENTORIES ??????????????????????????
-#CLEAN WHEN CREATING THE RAW INVENTORIES ?????????????????????????????????
+def inventories():
+    for collection in collections:
+        process_collection(collection,"'"+ collection.replace(" ","-") + "-inventory.txt","'" + collection.replace(" ","-")+ "-structured-inventory.txt")
 
-#####################################################################################
-#               DEFINE A FUNCTION TO WRITE OUT STRUCTURED INVENTORIES               #
-#####################################################################################
-def structured_inventory(test):                                                     #
-                                                                                    #
-    infile = open(test,"rt",encoding="utf-8")                                       #
-    inventory = infile.readlines()                                                  #
-    infile.close()                                                                  #
-    outfile = open("Harold-Swanson-clean-inventory.txt","w",encoding="utf-8")       #
-    if "Box" in inventory:                                                          #
-        for item in inventory:                                                      #
-            print(item[0:7] + "/n" + item[9:], file = outfile)                      #
-    elif "Box" not in inventory:                                                    #
-        for item in inventory:                                                      #
-            print("Items Without Box Number" + '/n' + item, file = outfile)         #
-    outfile.close                                                                   #
-                                                                                    #
-structured_inventory("'Harold-Swanson-inventory.txt")                               #
-                                                                                    #
-#####################################################################################
 
+inventories()
 
 
 
