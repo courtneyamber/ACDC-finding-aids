@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-collections = ['Volumne One Number One','AgComm Teaching','Theses','INTERPAK','Oscars in Agriculture','Eric Abbott',
+collections = ['Volume One Number One','AgComm Teaching','Theses','INTERPAK','Oscars in Agriculture','Eric Abbott',
                'Robert Agunga','Kathy Alison','George Axinn','Ovid Bay','John H. Behrens','Harvey F. Beutner',
                'George Biggar','Kristina M. Boone','John Brien','Claron Burnett','Francis C. Byrnes',
                'Warwick Easdown','James F. Evans','Eldon Fredericks','Claude W. Gifford','James E. Gruning',
@@ -10,7 +10,6 @@ collections = ['Volumne One Number One','AgComm Teaching','Theses','INTERPAK','O
                'Mason E. Miller','Geoffrey Moss','Fred Myers','Hadley Read','Bonnie Riechert','Stephen G-M Shenton',
                'Burton Swanson','Harold Swanson','Hal R. Taylor','Phillip J. Tichenor','Mark A. Tucker',
                'William B. Ward','Donald Watson','Larry R. Whiting','John L. Woods']
-
 
 def process_collection(collection,filename,filename_struc):
     df = pd.read_csv('acdc-records.csv')
@@ -31,17 +30,22 @@ def process_collection(collection,filename,filename_struc):
                       extract(r'.*(?P<Folder>Folder:.*)').astype(str).Folder.str.rstrip(' ;,')
     df['PlusIndictor'] = df['852'].str.\
                             extract(r'.*\$[a-z](?P<PlusIndictor>\+).*Box:.*').astype(str).PlusIndictor
-    df['Subfield'] = df['852'].str.\
-                            extract(r'.*\$(?P<Subfield>[a-z])\+*.*Box:.*').astype(str).Subfield
-    df['RemainingData'] = df['852'].str.replace('Box:.*', '', regex=True).astype(str).str.rstrip()
-    df.sort_values(['Box','Folder','RemainingData','Title'], ascending=[True,True,True,True],inplace=True)
-    df.reset_index(drop=True,inplace=True)
 
-## DataFrame now contains the fields Box, Folder, Subfield, PlusIndictor, RemainingData
-##     Subfield -- subfield letter that contained the box data
-##     PlusIndictor -- plus sign in found proceeding subfield letter
-##     RemainingData  -- remaining data found in box subfield
-##  only data from the box subfield is used to populate these extra field
+    df['SortKey'] = df['Box'].str.\
+                replace('Box:', '', regex=True).str.\
+                rstrip(' ;,.').str.lstrip(' ;,.')
+
+    for index,row in df.iterrows():
+        if row["SortKey"].isdigit():
+            row["SortKey"] = row["SortKey"].zfill(25)
+        elif row["SortKey"] == "nan":
+            row["SortKey"] = "".rjust(25, 'Z')
+        else:
+            row["SortKey"] = row["SortKey"].upper()
+
+    df.sort_values(["SortKey","Folder"], ascending=[True,True],inplace=True)
+    df.reset_index(drop=True,inplace=True)
+    df.drop('SortKey', axis=1,inplace=True)
 
     citations = []
     for index,row in df.iterrows():
@@ -86,28 +90,47 @@ def process_collection(collection,filename,filename_struc):
         citation += "(" + year +")."
 
         citations.append(citation)
+        
     outfile = open(filename,"w",encoding="utf-8")
     outfile2 = open(filename_struc,'w',encoding='utf-8')
 
     lastbox = ""
     for citation in citations:
         print(citation, file = outfile)
-        box = citation.split(".")[0]
+        box = citation.split(". ")[0]
         if lastbox != box:
             print(box, file = outfile2)
-        print(citation[citation.find(".")+1:], file = outfile2)
+        print(citation[citation.find(". ")+1:], file = outfile2)
         lastbox = box
 
     outfile.close()
     outfile2.close()
-
-
 def inventories():
     for collection in collections:
-        process_collection(collection,"'"+ collection.replace(" ","-") + "-inventory.txt","'" + collection.replace(" ","-")+ "-structured-inventory.txt")
+        process_collection(collection, collection.replace(" ","-") + "-inventory.txt", collection.replace(" ","-")+ "-structured-inventory.txt")
 
+def create_findingaid(collection):
+    infile = open('fa_template.txt','r',encoding='utf-8')
+    template = infile.read()
+    infile.close()
+
+    infile2 = open(collection.replace(" ","-")+ "-structured-inventory.txt",'r',encoding='utf-8')
+    inventory = infile2.read()
+    infile2.close()
+
+    findingaid = template
+    findingaid = findingaid.replace("[@[*? title ?*]@]",collection + " Collection")
+    findingaid = findingaid.replace("[@[*? creator ?*]@]",collection)
+    findingaid = findingaid.replace("[@[*? structured inventory ?*]@]",inventory)
+
+    outfile = open(collection.replace(" ","-") + "-findingaid.md",'w',encoding='utf-8')
+    print(findingaid, file = outfile)
+    outfile.close()
 
 inventories()
+
+for collection in collections:
+    create_findingaid(collection)
 
 
 
