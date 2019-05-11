@@ -7,3 +7,5 @@ This file gives a narrative summary of the work done on the project, including a
 ### adcd-fa
 This is the code needed to run the finding aid program. A description of how to run the code can be found in the readme file. 
 
+### fa_template
+This gives is a template for the finding aids, and is read in by the program.
