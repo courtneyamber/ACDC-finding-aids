@@ -118,31 +118,37 @@ def process_collection(collection,filename,filename_struc):
 
     outfile.close()
     outfile2.close()
+    
 def inventories():
     for collection in collections:
         process_collection(collection, collection.replace(" ","-") + "-inventory.txt", collection.replace(" ","-")+ "-structured-inventory.txt")
 
-def create_findingaid(collection):
-    infile = open('fa_template.txt','r',encoding='utf-8')
-    template = infile.read()
-    infile.close()
+def process_findingaid(collection):       # defining a function that processes each of the 
+    infile = open('fa_template.txt','r',encoding='utf-8')     # opening the finding aid template
+    template = infile.read()                # reading in the finding aid template     
+    infile.close()                          # closing the finding aid template file 
 
     infile2 = open(collection.replace(" ","-")+ "-structured-inventory.txt",'r',encoding='utf-8')
     inventory = infile2.read()
     infile2.close()
 
     findingaid = template
-    findingaid = findingaid.replace("[@[*? title ?*]@]",collection + " Collection")
-    findingaid = findingaid.replace("[@[*? creator ?*]@]",collection)
-    findingaid = findingaid.replace("[@[*? structured inventory ?*]@]",inventory)
+    findingaid = findingaid.replace("[@[*? title ?*]@]",collection + " Collection")     # replacing the title element in the template with the title for each collection
+    findingaid = findingaid.replace("[@[*? creator ?*]@]","Creator: " + collection)     # replacing the creator element in the template with the creator for each collection
+    findingaid = findingaid.replace("[@[*? structured inventory ?*]@]",inventory)        # replacing the structured inventory element in the template with the inventory for each collection
 
     outfile = open(collection.replace(" ","-") + "-findingaid.md",'w',encoding='utf-8')
     print(findingaid, file = outfile)
     outfile.close()
 
-inventories()
+def findingaids():                        #defining a function to generate finding aids for each collection
+    for collection in collections:              # looping through each collection in the list of collections 
+        process_findingaid(collection)           # calling on the process finding aids function and using each collection as a parameter
+    
+inventories()           # calling the inventories function
+findingaids()           # calling the finding aids function
 
-for collection in collections:
-    create_findingaid(collection)
+
+
 
 
