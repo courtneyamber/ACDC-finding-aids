@@ -7,11 +7,12 @@
 
 ### Project Overiew 
 --------------------
+This program creates inventories for the Agricultural Communications Documentation Center (ACDC) contributor collections, and then creates finding aids using those inventories. 
 
 
 ### How to run the code...
 --------------------------------
-
+You will need two files in order to run this code: acdc-records.csv and fa_template.txt.  
 
 
 
