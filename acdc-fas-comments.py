@@ -86,7 +86,7 @@ def process_collection(collection,filename,filename_struc):
     for index,row in df.iterrows():             # looping over every cell in the dataframe 
         box = row['Box']                        # assigning box as what is contained in row "Box"
         folder = row['Folder']                   # assigning folder as what is contained in row "Folder"
-        record_id = row["1"]                       # assigning the record_id to what is contained in row "1"
+        record_id = row["001"]                       # assigning the record_id to what is contained in row "1"
         record_id = record_id.replace('ACDC_','')      #replacing the beginning of the record_id so it only contains the                                                              actual number
         author = ""                              # initializing the author variable as an empty string
         if row["100"] != "nan":                       # checking to see if row 100 doesn't equal nothing
