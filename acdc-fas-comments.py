@@ -100,9 +100,13 @@ def process_collection(collection,filename,filename_struc):
                 if subfield[0] == "a":                  # checking to see if the index position of 0 equals an "a"
                     addauthor += subfield[1:] + ", "      # if so, adding the rest of that subfield information after                                                                  the "a" to the addauthor variable along with a comma and space
             if addauthor != "":                               # checking to see if the addauthor variable doesn't                                                                       equal nothing
-                addauthor = addauthor[0:len(addauthor)-2]       # stripping off the last comma space from the last addauthor                                                                    value in the addauthor variable
-        title = row["245"]                                  # assigning the contents of row 245 to the title variable
-        title = title.replace('$a','')                      # replacing the delimeter and subfield a with nothing
+                addauthor = addauthor[0:len(addauthor)-2]       # stripping off the last comma space from the last addauthor                                                                   value in the addauthor variable
+        title = ""                                             # initializing title as an empty string
+        if row["245"] != "nan":                                # checking to see if row 245 does not equal nothing
+          for subfield in row["245"].split("$"):               # splitting row 245 on the delimeter and looping through each                                                                  subfield
+            if subfield[0] == "a":                            # checking to see if the first index position of subfield                                                                        equals "a"
+                title = subfield[1:]                            # assiging title as the content of subfield for index                                                                         position 1 and on
+              
         year = "undated"                                #initalizing the year variable as undated (used for things with no                                                            date information 
         if row["260"] != "nan":                         #checking to see if row 260 doesn't equal nothing
             for subfield in row["260"].split("$"):       # splitting row 260 on the delimeter and looping over each subfield
