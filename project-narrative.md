@@ -15,17 +15,11 @@ After I had the raw inventories all set, I went about adding in another outfile 
 
 After I had my structured inventories complete, I created a finding aid in a text file.  In this template I included both field content that would remain constant across all collection finding aids, and for content that would differ, I added an element that I would replace with content created by the program, e.g. inventories and collection titles. 
 
+Once I had the template created, I wrote another function that would read in each structured inventory for each collection and the finding aid template, and then replace specific elements with the necessary information.  After I made these replacements, I wrote out the completed finding aid into a .md file.  I did this so that I would be able to easily convert those .md files to .doc files and then to .pdf files without fussing over formatting.  
 
+Lastly, I wrote a function that would loop through each collection and call on the previous function to write out each finding aid.  
 
-
-
-...
-
-
-I decided to write out the finding aids in .md files.  I did this so that I would be able to easily convert those .md files to .doc files and then to .pdf files without fussing over formatting.  
-
-Moving forward, I will need to read in the biographical notes the Center has been working on created.  
-
+Moving forward, there is still more that needs to be done.  I will need to finish all of the elements needed for the finding aids, such as the biographical notes.  I will also need to go through citations that don't include box information, and add that information into their respective BibLeaves records.  I also will need to consider creating structuring citations differently for different formats of material, i.e. journal articles vs. books.  
 
 
 -------------------
@@ -34,4 +28,4 @@ STILL IN PROGRESS
 
 -------------------
 
-### 750 words
+### 921 words
