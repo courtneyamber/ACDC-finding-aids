@@ -1,16 +1,16 @@
-# [@[*? title ?*]@]
+# [@[*? title ?*]@] <br />
 
-Creator: [@[*? creator ?*]@]
-Extent:
-Dates:
+Creator: [@[*? creator ?*]@] <br />
+Extent: <br />
+Dates: <br />
 
-### Access Statement: Documents in this collection are accessible through the Agricultural Communications Documentation Center at the Funk ACES Library.
+Access Statement: Documents in this collection are accessible through the Agricultural Communications Documentation Center at the Funk ACES Library. <br />
 
-### Biographical Note:
+### Biographical Note <br />
 
-### Subjects:
+### Subjects <br />
 
-### Arrangment Note:
+### Arrangment Note <br />
 
-### Collection Inventory
+### Collection Inventory <br />
 [@[*? structured inventory ?*]@]
