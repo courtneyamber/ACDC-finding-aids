@@ -137,8 +137,8 @@ def process_collection(collection,filename,filename_struc):
         print(citation, file = outfile)     # printing the citation to the outfile (aka the raw inventory)
         box = citation.split(". ")[0]       # splitting each citation on a period-space, taking the first index position of                                               that new string, and assigning it to the variable "box"
         if lastbox != box:                  # looking to see if the lastbox does not equal box
-            print(box, file = outfile2)     # printing out box to outfile2 (aka the structured inventory)
-        print(citation[citation.find(". ")+1:], file = outfile2)    #finding the portion of ciation that follows the box                                                                          information and printing that out to outfile2 (aka the                                                                        structured inventory) beneath the box information 
+            print("__**" + box + "**__" + "\n", file = outfile2)     # printing out box to outfile2 (aka the structured inventory)
+        print(citation[citation.find(". ")+1:] + "\n", file = outfile2)    #finding the portion of ciation that follows the box                                                                          information and printing that out to outfile2 (aka the                                                                        structured inventory) beneath the box information 
         lastbox = box                      # assigning lastbox as box to keep track of the last box number in the list that                                               way each citation with the same box is grouped together beneath that box                                                      statement
 
     outfile.close()       #closing both files
@@ -159,7 +159,7 @@ def process_findingaid(collection):                    # defining a function tha
 
     findingaid = template                                                               # initializing the finding aid with                                                                                           the finding aid template
     findingaid = findingaid.replace("[@[*? title ?*]@]",collection + " Collection")     # replacing the title element in the                                                                                          template with the title for each                                                                                              collection
-    findingaid = findingaid.replace("[@[*? creator ?*]@]","Creator: " + collection)     # replacing the creator element in                                                                                              the template with the creator for                                                                                             each collection
+    findingaid = findingaid.replace("[@[*? creator ?*]@]", collection)                  # replacing the creator element in                                                                                              the template with the creator for                                                                                             each collection
     findingaid = findingaid.replace("[@[*? structured inventory ?*]@]",inventory)        # replacing the structured                                                                                                   inventory element in the                                                                                                      template with the inventory for                                                                                               each collection
 
     outfile = open(collection.replace(" ","-") + "-findingaid.md",'w',encoding='utf-8')   # writing out each finding aid as                                                                                             a .md file
